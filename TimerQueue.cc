@@ -2,7 +2,9 @@
 #include<unistd.h>
 #include<ratio>
 #include<strings.h>
+
 #include"TimerQueue.h"
+#include"EventLoop.h"
 
 using namespace conex;
 
@@ -60,7 +62,6 @@ TimerQueue::TimerQueue(EventLoop *loop)
     , timerfd_(timerfdCreate())
     , timerChannel_(loop_, timerfd_)
 {
-    //loop_->assertInLoopThread();
     //timerChannel_.setReadCallback( [this](){handleRead();})
     timerChannel_.setReadCallback(std::bind(&TimerQueue::handleRead,this));
     timerChannel_.enableReading();
@@ -74,21 +75,21 @@ TimerQueue::~TimerQueue()
 Timer* TimerQueue::addTimer(TimerCallback cb, Timestamp when, NanoSecond interval)
 {
     Timer* timer = new Timer(std::move(cb),when,interval);
-    //loop_->runInLoop([=](){
-        //auto ret = timers_.insert({when,timer});
+    loop_->runInLoop([=](){
+        auto ret = timers_.insert({when,timer});
 
-        //if(timers_.begin() == ret.first)
-            //timerfdSet(timerfd_,when);
-    //});
+        if(timers_.begin() == ret.first)
+            timerfdSet(timerfd_,when);
+    });
     return timer;
 }
 void TimerQueue::cancelTimer(Timer* timer)
 {
-    //loop_->runInLoop([timer,this](){
-        //timer->cancel();
-        //timers_.erase({timer->when(),timer});
-        //delete timer;
-    //});
+    loop_->runInLoop([timer,this](){
+        timer->cancel();
+        timers_.erase({timer->when(),timer});
+        delete timer;
+    });
 }
 void TimerQueue::handleRead()
 {

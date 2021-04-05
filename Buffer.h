@@ -279,6 +279,9 @@ public:
 
     ssize_t readFd(int fd, int *savedErrno);
 
+    //自己加的
+    ssize_t writeFd(int fd, int *savedErrno);
+
 private:
     char *begin()
     { return &*buffer_.begin(); }

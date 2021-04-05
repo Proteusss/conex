@@ -10,6 +10,7 @@
 
 #include <cerrno>
 #include <sys/uio.h>
+#include<unistd.h>
 
 #include "Buffer.h"
 
@@ -41,6 +42,15 @@ ssize_t Buffer::readFd(int fd, int* savedErrno)
     else {
         writerIndex_ = buffer_.size();
         append(extrabuf, n - writable);
+    }
+    return n;
+}
+ssize_t Buffer::writeFd(int fd, int* saveErrno)
+{
+    ssize_t n = ::write(fd, peek(),readableBytes());
+    if(n < 0)
+    {
+        *saveErrno = errno;
     }
     return n;
 }
