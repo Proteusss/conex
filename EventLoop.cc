@@ -7,7 +7,9 @@
 #include<syscall.h> //SYS_gettid
 #include<unistd.h> //syscall
 #include<sys/eventfd.h>
+
 #include"EventLoop.h"
+#include"TimerQueue.h"
 
 using namespace conex;
 
@@ -148,4 +150,17 @@ void EventLoop::handleRead()
     {
         //LOG_ERROR
     }
+}
+//定时器相关操作
+Timer* EventLoop::runAt(Timestamp when, TimerCallback cb)
+{
+    return timerQueue_.addTimer(std::move(cb), when, MilliSecond::zero() );
+}
+Timer* EventLoop::runAfter(NanoSecond interval, TimerCallback cb)
+{
+    return runAt(time::now() + interval, cb); 
+}
+Timer* EventLoop::runEvery(NanoSecond interval, TimerCallback cb)
+{
+    return timerQueue_.addTimer(std::move(cb), time::now() + interval, interval);
 }
