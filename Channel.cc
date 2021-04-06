@@ -31,6 +31,8 @@ void Channel::handleEvents(Timestamp receiveTime)
         if(guard != nullptr)
             handleEventWithGuard(receiveTime);
     }
+    else 
+        handleEventWithGuard(receiveTime); //forget this line will make a bug.
 }
 void Channel::handleEventWithGuard(Timestamp receiveTime)
 {

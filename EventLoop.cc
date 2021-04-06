@@ -51,7 +51,7 @@ void EventLoop::loop()
 {
     //LOG_INFO
     quit_ = false;
-    while(quit_)
+    while(!quit_)
     {
         activeChannels_.clear();
         Timestamp poolReturnTime = poller_.poll(activeChannels_);
@@ -163,4 +163,8 @@ Timer* EventLoop::runAfter(NanoSecond interval, TimerCallback cb)
 Timer* EventLoop::runEvery(NanoSecond interval, TimerCallback cb)
 {
     return timerQueue_.addTimer(std::move(cb), time::now() + interval, interval);
+}
+void EventLoop::cancelTimer(Timer *timer)
+{
+    timerQueue_.cancelTimer(timer);
 }
