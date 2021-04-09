@@ -47,8 +47,8 @@ public:
     { connectionCallback_ = cb;}
     void setWriteCompleteCallback(const WriteCompleteCallback& cb)
     { writeCompleteCallback_ = cb; }
-    void setHighWaterMarkCallback(const HighWaterMarkCall& cb)
-    { highWaterMarkCallback_ = cb; }
+    void setHighWaterMarkCallback(const HighWaterMarkCall& cb, size_t mark)
+    { highWaterMarkCallback_ = cb; highWaterMark_ = mark;}
     //内部设置
     void setCloseCallBack(const CloseCallback& cb)
     { closeCallback_ = cb; }

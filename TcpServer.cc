@@ -1,14 +1,45 @@
+#include <thread>
+#include<cstdio>
 #include "TcpServer.h"
 #include "EventLoop.h"
-using namespace conex;
+#include"TcpConnection.h"
 
+using namespace conex;
+namespace conex
+{
+void defaultThreadInitCallback(size_t index)
+{
+    printf("EventLoop thread #%lu started", index);
+}
+
+void defaultConnectionCallback(const TcpConnectionPtr& conn)
+{
+    printf("connection %s -> %s %s",
+         conn->peer().toIpPort().c_str(),
+         conn->local().toIpPort().c_str(),
+         conn->connected() ? "up" : "down");
+}
+
+void defaultMessageCallback(const TcpConnectionPtr& conn, Buffer& buffer,Timestamp time)
+{
+    printf("connection %s -> %s recv %lu bytes",
+          conn->peer().toIpPort().c_str(),
+          conn->local().toIpPort().c_str(),
+          buffer.readableBytes());
+    buffer.retrieveAll();
+}
+}
 TcpServer::TcpServer(EventLoop *loop, const InetAddress& local)
     : baseLoop_(loop)
     , local_(local)
     , threadNum_(1)
     , started_(false)
+    , threadInitCallback_(defaultThreadInitCallback)  //不设置默认的回调函数，而用户又没设置回调函数时，运行会报错
+    , messageCallback_(defaultMessageCallback)
+    , connectionCallback_(defaultConnectionCallback)
 {
     //LOG_INFO
+    printf("create TcpServer() %s\n", local.toIpPort().c_str());
 }
 
 TcpServer::~TcpServer()
