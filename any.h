@@ -122,13 +122,13 @@ T& any_cast(const any& anyObj)
 template<class T>
 T* any_cast(any* anyPtr)
 {
-    return &(static_cast<any::dataholder<T>*>(anyPtr->data_));
+    return &(static_cast<any::dataholder<T>*>(anyPtr->data_.get())->data_);
 }
 
 template<class T>
 T* any_cast(const any* anyPtr)
 {
-    return &(static_cast<any::dataholder<T>*>(anyPtr->data_));
+    return &(static_cast<any::dataholder<T>*>(anyPtr->data_.get())->data_);
 }
 }
 
