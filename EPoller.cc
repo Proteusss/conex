@@ -61,7 +61,7 @@ void EPoller::updateChannel(int op, Channel* channel)
 Timestamp EPoller::poll(ChannelList& activeChannel)
 {
     int maxEvents = static_cast<int>(events_.size());
-    int numEvents = ::epoll_wait(epollfd_,events_.data(),maxEvents,-1);//注意这里把epollwait设置成阻塞的了
+    int numEvents = ::epoll_wait(epollfd_,events_.data(),maxEvents,1000);//注意这里把epollwait设置成阻塞的了
     Timestamp now = time::now();
     if(numEvents == -1)
     {

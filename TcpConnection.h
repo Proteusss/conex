@@ -6,7 +6,6 @@
  */
 #ifndef CONEX_TCPCONNECTION_H
 #define CONEX_TCPCONNECTION_H
-#include<any>
 #include<atomic>
 
 #include "noncopyable.h"
@@ -15,6 +14,7 @@
 #include "Channel.h"
 #include "Buffer.h"
 #include "Timestamp.h"
+#include "any.h"
 
 namespace conex
 {
@@ -66,6 +66,13 @@ public:
     void startRead();
     bool isReading() const { return channel_.isReading(); }
 
+    void setContext(const any& context)
+    { context_ = context; }
+    const any& getContext() const
+    { return context_; }
+    any& getContext()
+    { return context_; }
+
 private:
     enum ConnectionState
     {
@@ -102,6 +109,8 @@ private:
     WriteCompleteCallback writeCompleteCallback_;
     HighWaterMarkCall highWaterMarkCallback_;
     CloseCallback closeCallback_;
+
+    any context_;
 };
 
 }

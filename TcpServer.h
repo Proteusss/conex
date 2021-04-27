@@ -42,6 +42,9 @@ public:
 
     void setThreadNum(size_t n);
     void start();
+
+    EventLoop* getLoop() const
+    { return baseLoop_; }
 private:
     void startInLoop();
     void runInThread(size_t index);
